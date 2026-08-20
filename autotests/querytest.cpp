@@ -69,6 +69,20 @@ void QueryTest::installAndQuery()
     QCOMPARE(KPackage::PackageLoader::self()->listPackages(QStringLiteral("Plasma/TestKPackageInternalPlasmoid")).count(), 3);
 }
 
+void QueryTest::installGlobalThemeIgnoresSddmDependency()
+{
+    m_dataDir.removeRecursively();
+
+    // Reproduce a system where the standalone SDDM KCM is installed. Global
+    // themes must still ignore their SDDM dependency instead of invoking it.
+    QVERIFY(m_dataDir.mkpath(QStringLiteral("knsrcfiles")));
+    QFile knsrcFile(m_dataDir.filePath(QStringLiteral("knsrcfiles/sddmtheme.knsrc")));
+    QVERIFY(knsrcFile.open(QIODevice::WriteOnly));
+    knsrcFile.close();
+
+    QVERIFY(checkedInstall(packageFormat, QFINDTESTDATA("data/testpackagesddmdep"), KJob::NoError));
+}
+
 void QueryTest::queryCustomPlugin()
 {
     m_dataDir.removeRecursively();

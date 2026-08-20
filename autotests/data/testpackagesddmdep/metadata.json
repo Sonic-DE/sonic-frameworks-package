@@ -1,0 +1,11 @@
+{
+    "KPlugin": {
+        "Id": "org.kde.testpackagesddmdep",
+        "License": "GPLv2+",
+        "Name": "Test Global Theme with SDDM Dependency"
+    },
+    "KPackageStructure": "Plasma/LookAndFeel",
+    "X-KPackage-Dependencies": [
+        "mock://sddmtheme.knsrc/12345"
+    ]
+}

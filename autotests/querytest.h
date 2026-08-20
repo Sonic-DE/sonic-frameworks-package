@@ -19,6 +19,7 @@ class QueryTest : public QObject
 private Q_SLOTS:
     void initTestCase();
     void installAndQuery();
+    void installGlobalThemeIgnoresSddmDependency();
     void queryCustomPlugin();
 
 private:
