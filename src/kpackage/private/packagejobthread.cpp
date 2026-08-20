@@ -298,13 +298,15 @@ bool PackageJobThread::installPackage(const QString &src, const QString &dest, c
     }
 
     // install dependencies
-    const QStringList optionalDependencies{QStringLiteral("sddmtheme.knsrc")};
     const QStringList dependencies = meta.value(QStringLiteral("X-KPackage-Dependencies"), QStringList());
+    const bool isLookAndFeelPackage = readKPackageType(meta) == QLatin1String("Plasma/LookAndFeel");
     for (const QString &dep : dependencies) {
         QUrl depUrl(dep);
-        const QString knsrcFilePath = QStandardPaths::locate(QStandardPaths::GenericDataLocation, QLatin1String("knsrcfiles/") + depUrl.host());
-        if (knsrcFilePath.isEmpty() && optionalDependencies.contains(depUrl.host())) {
-            qWarning() << "Skipping depdendency due to knsrc files being missing" << depUrl;
+        // SDDM is no longer a component of a global theme. The standalone
+        // SDDM KCM invokes this KNS configuration directly, without going
+        // through KPackage's dependency installation path.
+        if (isLookAndFeelPackage && depUrl.host() == QLatin1String("sddmtheme.knsrc")) {
+            qCDebug(KPACKAGE_LOG) << "Ignoring SDDM theme dependency" << depUrl;
             continue;
         }
         if (!installDependency(depUrl)) {
